@@ -1,5 +1,12 @@
 # Personal Chatbot – Askify 🤖
 
+Askify is a personalized AI chatbot built using Python and web technologies.  
+It allows users to interact with an intelligent assistant through a simple and user-friendly interface.
+
+## Purpose
+This project was built for learning and demonstrating chatbot development.
+# Personal Chatbot – Askify 🤖
+
 Askify is a personalized AI chatbot built using Python and web technologies.
 It allows users to interact with an intelligent assistant through a simple
 and user-friendly interface.
