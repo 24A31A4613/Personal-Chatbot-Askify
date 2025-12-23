@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ASKIFY - Chatbot</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>
+    (function () {
+      try {
+        const u = JSON.parse(localStorage.getItem('currentUser'));
+        if (!u) { window.location.assign('../login.html'); }
+      } catch { window.location.assign('../login.html'); }
+    })();
+  </script>
+</head>
+<body>
+  <div class="bg-aurora"></div>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-card frosted card-float-in">
+        <div class="brand-row">
+          <img src="askify-logo.png" alt="ASKIFY Logo" class="logo-full" />
+          <div class="brand-title">
+            <span class="title-text">Askify</span>
+            <span class="title-sub">AI Chat Assistant</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="profile-block">
+          <div class="profile-monogram" id="profileMonogram"></div>
+          <div class="profile-meta">
+            <div class="label">Signed in as</div>
+            <div class="value" id="profileName">User</div>
+          </div>
+        </div>
+
+        <div class="divider soft"></div>
+
+        <div class="sidebar-actions">
+          <button id="newChatBtn" class="sidebar-btn">
+            <span>New Chat</span>
+          </button>
+          <button id="clearHistoryBtn" class="sidebar-btn ghost">
+            <span>Clear View</span>
+          </button>
+        </div>
+
+        <div class="divider soft"></div>
+
+        <!-- Chat History -->
+        <div class="chat-history">
+          <div class="history-title">Chat History</div>
+          <ul id="chatHistoryList" class="history-list"></ul>
+        </div>
+
+        <div class="divider soft"></div>
+
+        <div class="hint">
+          Double-click any message to copy. Shift+Enter inserts a new line.
+        </div>
+
+        <!-- Logout at bottom -->
+        <div class="logout-wrap">
+          <button id="logoutBtn" class="sidebar-btn danger">
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-area">
+      <header class="chat-header">
+        <div class="title-glow">Askify</div>
+        <div class="header-pulse"></div>
+
+        <!-- 🌗 Theme Toggle -->
+        <div class="theme-toggle" title="Toggle Dark/Light Mode">
+          <i id="themeIcon" class="fas fa-moon"></i>
+         </div>
+
+        <!-- 🔈 Sound Toggle -->
+        <div class="sound-toggle"
+              title="Toggle Sound Mute/Un-mute"
+              style="cursor:pointer;color:var(--ink-1);font-size:20px;margin-left:8px;">
+          <i id="muteIcon" class="fas fa-volume-up"></i>
+        </div>
+      </header>
+
+
+      <div id="chatBox" class="chat-box hide-scrollbar"></div>
+
+      <!-- Modified Input Area -->
+      <div class="input-area">
+        <div class="attach-menu-wrap">
+          <button id="attachBtn" class="attach-btn" type="button" aria-label="Attachment options">
+            <i class="fas fa-paperclip"></i>
+          </button>
+          <div class="attach-menu" id="attachMenu" aria-label="Attachment menu" role="menu">
+            <button class="attach-menu-item" type="button" data-action="files" role="menuitem"><i class="fas fa-file"></i> Files</button>
+            <button class="attach-menu-item" type="button" data-action="photos" role="menuitem"><i class="fas fa-image"></i> Photos</button>
+            <button class="attach-menu-item" type="button" data-action="camera" role="menuitem"><i class="fas fa-camera"></i> Camera</button>
+          </div>
+        </div>
+        <textarea id="userInput" rows="1" placeholder="Ask anything"></textarea>
+        <button id="voiceBtn" class="voice-btn" type="button" aria-label="Voice input"><i class="fas fa-microphone"></i></button>
+        <button id="sendBtn" class="send-cta">Send</button>
+      </div>
+
+      <button id="scrollDownBtn" title="Jump to latest">▼</button>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

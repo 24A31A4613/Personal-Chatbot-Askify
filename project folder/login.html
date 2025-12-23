@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASKIFY Login/Signup</title>
+
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,600" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.11.3/paper-full.min.js"></script>
+
+<style>
+/* RESET & BASE */
+body{margin:0;height:100%;overflow:hidden;font-family:"Roboto",sans-serif;background:#10101a}
+
+/* BACKGROUND */
+.backRight,.backLeft{position:absolute;width:50%;height:100%;z-index:-1}
+.backRight{background:#1b1e3f}
+.backLeft{background:#14172b}
+#canvas{width:100%;height:100%;position:absolute;z-index:0}
+
+/* SLIDE BOX */
+#slideBox{width:50%;height:100%;overflow:hidden;margin-left:50%;position:absolute;box-shadow:0 14px 28px rgba(0,0,0,.7),0 10px 10px rgba(0,0,0,.7)}
+.topLayer{width:200%;height:100%;display:flex;position:relative;left:-100%}
+
+/* LEFT (SIGN-UP) */
+.left{width:50%;height:100%;overflow-y:auto;background:#1b1e3f;padding:60px 50px}
+.left h2{color:#5c83ff;font-size:2.5em;margin-bottom:1em}
+.left label{color:#ccc;font-size:.85em;margin-bottom:.3em;display:block}
+.left input,.left select{width:100%;border:0;border-bottom:1px solid #555;color:#fff;background:transparent;font-size:1em;padding:6px 0;margin-bottom:12px;outline:none}
+.left input:focus,.left select:focus{border-bottom:1px solid #5c83ff;color:#5c83ff}
+.left select#gender{appearance:none;-webkit-appearance:none;-moz-appearance:none;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='5'><polygon points='0,0 10,0 5,5' fill='%235c83ff'/></svg>") no-repeat right 10px center/10px 5px;cursor:pointer}
+
+/* RIGHT (LOGIN) */
+.right{width:50%;height:100%;overflow-y:auto;background:#2c2f4a;padding:60px 50px}
+.right h2{color:#00b4d8;font-size:2.5em;margin-bottom:1em}
+.right label{color:#ccc;font-size:.85em;margin-bottom:.3em;display:block}
+.right input{width:100%;border:0;border-bottom:1px solid #555;color:#fff;background:transparent;font-size:1em;padding:6px 0;margin-bottom:12px;outline:none}
+.right input:focus{border-bottom:1px solid #00b4d8;color:#00b4d8}
+
+/* PASSWORD TOGGLE EYE */
+.password-container{position:relative}
+.password-container .toggle-password{
+  position:absolute;right:0;top:50%;transform:translateY(-50%);
+  cursor:pointer;color:#ccc;font-size:1.1em;
+  user-select:none; display:none;
+}
+
+/* BUTTONS */
+button{padding:.8em 1.5em;font-weight:600;text-transform:uppercase;font-size:1em;color:#fff;border-radius:3px;border:0;cursor:pointer;transition:.25s;margin-right:10px}
+button.signup{background:#5c83ff}
+button.login{background:#00b4d8}
+button.off{background:none;box-shadow:none;margin:0;color:#ccc}
+button.signup:hover{background:#4466cc}
+button.login:hover{background:#0096c7}
+
+/* RESPONSIVE */
+@media(max-width:1366px){#slideBox{width:60%;margin-left:40%}.left,.right{padding:40px 30px}.left h2,.right h2{font-size:2em}button{padding:.7em 1.2em;font-size:.95em}}
+@media(max-width:1024px){#slideBox{width:70%;margin-left:30%}.left,.right{padding:30px 20px}}
+@media(max-width:768px){#slideBox{width:80%;margin-left:20%}.left,.right{padding:20px 15px}}
+</style>
+</head>
+<body>
+
+<div id="back">
+  <canvas id="canvas"></canvas>
+  <div class="backRight"></div>
+  <div class="backLeft"></div>
+</div>
+
+<div id="slideBox">
+  <div class="topLayer">
+    <!-- SIGN-UP -->
+    <div class="left">
+      <div class="content">
+        <h2>Sign Up</h2>
+        <form id="form-signup" novalidate>
+          <div class="form-element form-stack">
+            <label for="email">Email</label>
+            <input id="email" type="email" required>
+          </div>
+          <div class="form-element form-stack">
+            <label for="username-signup">Username</label>
+            <input id="username-signup" type="text" required>
+          </div>
+          <div class="form-element form-stack password-container">
+            <label for="password-signup">Password</label>
+            <input id="password-signup" type="password" required>
+            <span class="toggle-password">&#128065;</span>
+          </div>
+          <div class="form-element form-stack">
+            <label for="gender">Gender</label>
+            <select id="gender" required>
+              <option value="" disabled selected>Select gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+
+          <div style="height:40px"></div>
+
+          <div class="form-element form-submit">
+            <button id="signUp" class="signup">Sign Up</button>
+            <button id="goLeft" class="signup off">Log In</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="right">
+      <div class="content">
+        <h2>Login</h2>
+        <form id="form-login" novalidate>
+          <div class="form-element form-stack">
+            <label for="email-login">Email</label>
+            <input id="email-login" type="email" required>
+          </div>
+          <div class="form-element form-stack password-container">
+            <label for="password-login">Password</label>
+            <input id="password-login" type="password" required>
+            <span class="toggle-password">&#128065;</span>
+          </div>
+          <div class="form-element form-submit">
+            <button id="logIn" class="login">Log In</button>
+            <button id="goRight" class="login off">Sign Up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function(){
+  /* PANEL SLIDE */
+  $('#goRight').click(e=>{
+    e.preventDefault();
+    $('#slideBox').animate({marginLeft:'0'});
+    $('.topLayer').animate({marginLeft:'100%'});
+  });
+  $('#goLeft').click(e=>{
+    e.preventDefault();
+    const target = window.innerWidth>769 ? '50%' : '20%';
+    $('#slideBox').animate({marginLeft:target});
+    $('.topLayer').animate({marginLeft:'0'});
+  });
+
+  /* SIGN-UP */
+  $('#signUp').click(e=>{
+    e.preventDefault();
+    const email  = $('#email').val().trim();
+    const user   = $('#username-signup').val().trim();
+    const pass   = $('#password-signup').val();
+    const gender = $('#gender').val();
+
+    if(!email||!user||!pass||!gender){
+      alert('Please fill all fields!');
+      return;
+    }
+
+    $.ajax({
+      url: '/api/signup',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({email,email, username:user, password:pass, gender:gender}),
+      success: function(res){
+        alert(`Sign up successful! Welcome, ${user}`);
+        $('#goLeft').click();
+      },
+      error: function(xhr){
+        alert(xhr.responseJSON.error || 'Sign up failed!');
+      }
+    });
+  });
+
+  /* LOGIN */
+  $('#logIn').click(e=>{
+    e.preventDefault();
+    const email = $('#email-login').val().trim();
+    const pass  = $('#password-login').val();
+
+    if(!email||!pass){
+      alert('Please fill all fields!');
+      return;
+    }
+
+    $.ajax({
+      url: '/api/login',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({email:email, password:pass}),
+      success: function(res){
+        alert(`Login successful! Welcome back, ${res.user.username}`);
+        // Store user info in localStorage for chatbot page
+        localStorage.setItem('currentUser', JSON.stringify(res.user));
+        window.location.href='chatbot-frontend/index.html';
+      },
+      error: function(xhr){
+        alert(xhr.responseJSON.error || 'Login failed!');
+      }
+    });
+  });
+
+  /* SHOW/HIDE PASSWORD - eye icon */
+  $('.password-container input').on('input focus', function(){
+    $(this).siblings('.toggle-password').show();
+  }).on('blur', function(){
+    if(!$(this).val()) $(this).siblings('.toggle-password').hide();
+  });
+
+  $('.toggle-password').click(function(){
+    const input = $(this).siblings('input');
+    if(input.attr('type')==='password'){
+      input.attr('type','text');
+      $(this).html('&#128064;'); // open eye
+    }else{
+      input.attr('type','password');
+      $(this).html('&#128065;'); // normal eye
+    }
+  });
+});
+
+/* PAPER.JS BACKGROUND */
+paper.install(window);
+paper.setup(document.getElementById('canvas'));
+let shapeGroup=new Group(),pos=[];
+function bounds(){
+  let w=view.size.width,h=view.size.height,mx=w/2,my=h/2;
+  pos=[{x:mx+150,y:100},{x:200,y:my},{x:mx-100,y:150},{x:0,y:my+100},
+       {x:mx/2,y:100},{x:mx+80,y:h-50},{x:w-50,y:my-50},{x:mx+100,y:my+100}];
+}
+function init(){
+  bounds();
+  let d=[
+    'M231,352l445-156L600,0L452,54L331,3L0,48L231,352',
+    'M0,0l64,219L29,343l535,30L478,37l-133,4L0,0z',
+    'M0,65l16,138l96,107l270-2L470,0L337,4L0,65z',
+    'M333,0L0,94l64,219L29,437l570-151l-196-42L333,0',
+    'M331.9,3.6l-331,45l231,304l445-156l-76-196l-148,54L331.9,3.6z',
+    'M389,352l92-113l195-43l0,0l0,0L445,48l-80,1L122.7,0L0,275.2L162,297',
+    'M50 100 L300 150 L550 50 L750 300 L500 250 L300 450 L50 100',
+    'M700 350 L500 350 L700 500 L400 400 L200 450 L250 350 L100 300 L150 50 L350 100 L250 150 L450 150 L400 50 L550 150 L350 250 L650 150 L650 50 L700 150 L600 250 L750 250 L650 300 L700 350'
+  ];
+  d.forEach((p,i)=>{
+    let path=new Path({strokeColor:'rgba(255,255,255,0.5)',strokeWidth:2,parent:shapeGroup});
+    path.pathData=p;
+    path.scale(2);
+    path.position=pos[i];
+  });
+}
+init();
+view.onFrame=e=>{
+  if(e.count%4===0){
+    shapeGroup.children.forEach((c,i)=>c.rotate(i%2?-0.1:0.1));
+  }
+};
+view.onResize=()=>{
+  bounds();
+  shapeGroup.children.forEach((c,i)=>c.position=pos[i]);
+};
+</script>                                
+</body>
+</html>
